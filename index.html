@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="changeClass" id="dataset" data-id="100"> Test Data </div>
+
+
+
+    <button onclick="changeClass()"> Change Class to Red</button>
+    <div>
+
+        <button onclick="getDataSets()">Get Data Set of Test Data</button>
+
+        <span class="data-set">Current Data set is </span>
+
+    </div>
+
+    <div>
+        <button onclick="addElement()">Add Element to dom</button>
+    </div>
+
+
+    <div class="inputes">
+        <input type="text" name="firstInput" onchange="loadVal()" value="Test this data" id="firstInput">
+        <span class="firstInput-val"></span>
+        <button onclick="setDefaultValue()">Set DefaultValue</button>
+    </div>
+
+
+
+    <button onclick="fetchData()">FetchDataFromApi</button>
+    <div class="fetch-data">
+
+
+    </div>
+
+
+</body>
+<script>
+    class DomClass {
+        constructor() {
+            this.getDOM();
+            this.setInputValue();
+        }
+        getDOM = () => document;
+        checkClass = (currentClass) => this.getDOM().querySelector(`.${currentClass}`);
+        changeClass(currentClass, newClassName) {
+            let oldClass = this.checkClass(currentClass);
+            if (!oldClass) return 0;
+            oldClass.className = newClassName;
+        }
+        getDataSets = (className) => this.getDOM().getElementById(className).dataset.id;
+
+        addElement(className) {
+            let newTag = document.createElement('p');
+            newTag.className = 'new-tag';
+            let data = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque, cumque, libero natus cupiditate asperiores doloribus, facere optio sequi minima nesciunt accusantium reiciendis nobis ipsam et fuga laudantium autem laboriosam quisquam?";
+            (this.getDOM().getElementById(className).appendChild(newTag)).innerHTML = data
+        }
+        getUserInfo = async () => await (await fetch('https://mocki.io/v1/d4867d8b-b5d5-4a48-a4ab-79131b5809b8')).json();
+
+        setInputValue() {
+            let inputValue = this.getDOM().getElementById('firstInput').value;
+            this.getDOM().querySelector('.firstInput-val').innerHTML = inputValue;
+        }
+        setDefaultValue() {
+            this.getDOM().getElementById('firstInput').value = 'Devalut value'
+            this.setInputValue();
+        }
+        // https://qa-api.damipasal.com/
+
+    }
+    let dom = new DomClass();
+
+
+    function loadVal() {
+        dom.setInputValue();
+    }
+
+    function setDefaultValue() {
+        dom.setDefaultValue();
+    }
+    function changeClass() {
+        dom.changeClass('changeClass', 'red')
+    }
+    function getDataSets() {
+        let data = dom.getDataSets('dataset');
+        document.getElementsByClassName('data-set')[0].innerHTML = `Current Data set is ${data}`;
+    }
+    function addElement() {
+        dom.addElement('dataset');
+    }
+    function fetchData() {
+        let fetchDataClass = document.querySelector('.fetch-data');
+
+        dom.getUserInfo().then(res => {
+            fetchDataClass.innerHTML = ''
+            if (!res.length) return;
+            res.forEach(data => {
+                fetchDataClass.innerHTML = fetchDataClass.innerHTML + `<div><div> name: ${data.name}</div> <div> city: ${data.city}</div></div>`
+            });
+        });
+    }
+
+</script>
+<style>
+    .red {
+        color: red;
+    }
+</style>
+
+</html>
